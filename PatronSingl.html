@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+	<body>
+		<span onclick = "run();">Click Here and See the Magic!</span>
+		</body>
+	</html>	
+
+
+
+	<script>
+
+		function Computadora (modelo,precio,marca)
+		{
+			this.modelo = modelo;
+			this.precio = precio;
+			this.marca = marca;
+
+			this.toString = function (){
+				return "\n" + "Modelo:" + this.modelo + "\n" + "Precio:" + this.precio + "\n" + "Marca:" + this.marca + "\n";
+			};
+		}
+
+		var Singleton = (function () {
+    var instance;
+ 
+    function createInstance(modelo,precio,marca) {
+        var object = new Computadora(modelo,precio,marca);
+        return object;
+    }
+ 
+    return {
+        getInstance: function (modelo,precio,marca) {
+            if (!instance) {
+                instance = createInstance(modelo,precio,marca);
+            }
+            return instance;
+        }
+    };
+})();
+
+function run() {
+ 
+    var instance1 = Singleton.getInstance("HP220",20000,"Hewlett Packard");
+    var instance2 = Singleton.getInstance("Vaio",50000,"Sony");
+ 	alert("Misma instancia de un Objeto?,Patron Violado : " + (instance1 === instance2)); 
+
+    alert("Objeto creado " + instance1 );  
+}
+
+
+
+
+
+
+
+
+		</script>
