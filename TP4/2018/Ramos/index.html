@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Trabajo Practico N°4 Vue.js</title>
+</head>
+<body>
+    <div id= "app">
+
+        <header class="divPadding">
+            <h1 class="text-white">VUE - Cuarto TP</h1>
+            
+        </header>
+
+        <p v-if="errors.length">
+                <b>Para ingresar una Persona necesita completar los siguientes campos:</b>
+                <ul>
+                    <li v-for="error in errors">{{ error }}</li>
+                </ul>
+        </p>    
+        <fieldset>
+            <legend>COMPLETE FORMULARIO</legend>
+                <p>
+                    <strong><label for="model">Ingrese Nombre</label></strong>
+                    <input type="text"  class="form-control" ref = "focus" id="app" aria-describedby="texto para mostrar" placeholder="Ingresá un nombre" required v-model="persona.nombre">
+                </p>
+                <p>
+                    <strong><label for="model">Ingrese Edad</label></strong>
+                    <input type="number"  class="form-control" id="app" aria-describedby="texto para mostrar" placeholder="Ingresá una edad" required v-model="persona.edad">
+                </p>
+                <p> 
+                        <strong><label for="model">Ingrese Sexo</label></strong>
+                        <input type="radio" name="genero" v-model="persona.sexo" value="M" checked> Masculino
+                        <input type="radio" name="genero" v-model="persona.sexo" value="F"> Femenino   
+                </p>
+                <button @click="agregar()">Agregar</button>
+            
+        </fieldset>
+        <fieldset>
+            <legend> Seleccione el Sexo a Listar </legend>
+            <p>
+             <strong><label>Listado </label></strong>
+             <input type="radio" name="listado" v-model="listado" value="T" title="Mostrar Todo el Personal" checked> Todos
+             <input type="radio" name="listado" v-model="listado" value="M" title="Mostrar Personal Masculino"> Masculino
+            <input type="radio" name="listado" v-model="listado" value="F" title="Mostrar Personal Femenino"> Femenino
+            </p>
+
+          
+
+        </fieldset>
+
+        <fieldset>
+            <legend>LISTADO</legend>
+            <label>Toque en la esfera para eliminar persona</label>
+            <p>&nbsp;</p>        
+            <table class="table table-striped text-white" v-if="total > 0">
+                <thead>
+                    <tr>
+                        
+                        <th width="10%"></th>
+                        <th width="70%">Nombre y Apellido</th>
+                        <th width="10%">Sexo</th>
+                        <th width="10%">Edad</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot>                    
+                <tbody>
+                   
+                    <tr v-for="(persona, index) in personas" :key="index">                    
+                        <template v-if="listado==='T' || listado==persona.sexo">
+                            <td align="right"><a class="btn btn-default" data-toggle="tooltip" v-bind:title='"Eliminar a "+persona.nombre' @click="borrarPersona(persona.id)"><img src="images/esfera.png" border="0"></a></td>
+                            
+                            <td> {{ persona.nombre }}</td>
+                            <td> {{ persona.sexo }}</td>
+                            <td> {{ persona.edad }}</td>
+                        </template>
+                         
+                    </tr>
+                </tbody>
+            </table>
+
+        </fieldset>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script>
+            new Vue({
+                el: "#app",
+                data: {
+                    errors: [],
+                    listado : "T",
+                    idInicial: 0,
+                    personas: [],
+                    persona: {                        
+                        nombre: "",
+                        edad: "",
+                        sexo: ""
+                    },
+                
+                    sexo: "",
+                    nombre: "",
+                    edad: "",
+                    
+                },
+                computed: {
+                    total() {
+                        return this.personas.length;
+                    },
+                    totallistado() {
+                        return this.listado.length;
+                    }
+                },
+                methods: {
+                    agregar() {
+                        if (this.persona.nombre && this.persona.edad && this.persona.sexo) {
+                        
+                            this.personas.push({
+                                id: this.idInicial++,
+                                nombre: this.persona.nombre,
+                                edad: this.persona.edad,
+                                sexo: this.persona.sexo
+                            });                        
+                            this.persona.nombre = "";
+                            this.persona.edad = "";
+                            this.persona.sexo = "";
+                            this.errors = [];
+                            
+                            
+                            
+                        } else 
+                        {
+
+                            this.errors = [];
+
+                            if (!this.persona.nombre) {
+                                this.errors.push('El Nombre es requerido');
+                            }
+                            if (!this.persona.edad) {
+                                this.errors.push('La Edad es requerida');
+                            }    
+                            if (!this.persona.sexo) {
+                                this.errors.push('El Sexo es Requerido');
+                            }    
+                             
+                        
+                        }
+                        this.setFocus();
+                    },
+                    
+                    borrarPersona(id) {
+                        this.personas = this.personas.filter(persona => persona.id !== id);
+                    },
+                    
+                    listar(sexo) {
+                        this.listado = this.personas.filter(persona => persona.sexo == sexo);
+                    },
+                    setFocus: function()
+                    {
+                        this.$refs.focus.focus();
+                    },                    
+                    beforeCreate: function()
+                    {
+                        this.$refs.focus.focus();
+                    }                          
+                    
+                }
+            });
+        </script>
+    
+</body>
+</html>
